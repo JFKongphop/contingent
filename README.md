@@ -125,26 +125,38 @@ Premiums are computed **on ciphertext** (`premium = size × p`), and every payou
 ## 6. Architecture
 
 ```mermaid
-flowchart LR
-  subgraph Browser["Trader's browser"]
-    SDK["@cofhe/sdk<br/>encrypt inputs · decrypt with permit"]
+%%{init: {"flowchart": {"nodeSpacing": 40, "rankSpacing": 55}, "themeVariables": {"fontSize": "18px"}}}%%
+flowchart TB
+  U["Trader's browser<br/>@cofhe/sdk encrypts inputs"]
+
+  subgraph TRADE["1 · Trade: encrypted positions"]
+    PP["ProtectedPerp<br/>perp + protection in 1 tx"]
+    PERP["ConfidentialPerp<br/>ETH-PERP 1-10x"]
+    HEDGE["ContingentHedge<br/>YES / NO protection"]
   end
-  SDK -->|encrypted collateral, side, cover| PP[ProtectedPerp]
-  SDK -->|encrypted collateral, side| PERP[ConfidentialPerp]
-  SDK -->|encrypted size, side| HEDGE[ContingentHedge]
-  PP -->|openPositionFor| PERP
-  PP -->|openHedgeFor · side = NOT isLong| HEDGE
-  PERP -->|lock / release| COL[ConfidentialCollateral]
-  HEDGE -->|premium lock / refund| COL
-  COL --- CUSDG[ConfidentialUSDG<br/>cUSDG]
-  HEDGE -->|odds| MKT[EventMarket<br/>public odds]
-  HEDGE -->|reserve liability · premiums| VAULT[UnderwriterVault<br/>LP capital]
-  HEDGE --> SR[SettlementRouter] -->|payWinner| VAULT
-  HEDGE --> PM[ConfidentialPositionManager] --- NFT[PositionNFT]
-  MKT --> RES[PriceThresholdResolver] --> CL[(Chainlink ETH/USD)]
-  PERP --> CL
-  HOOK[EventHook<br/>Uniswap v4] -.guards a v4 odds pool.-> MKT
+
+  subgraph MONEY["2 · Money: USDG"]
+    COL["ConfidentialCollateral<br/>+ cUSDG"]
+    VAULT["UnderwriterVault<br/>LP capital"]
+  end
+
+  subgraph PRICE["3 · Price & resolution: public"]
+    MKT["EventMarket<br/>public odds"]
+    CL[("Chainlink<br/>ETH / USD")]
+  end
+
+  U -->|encrypted| PP
+  PP -->|open perp| PERP
+  PP -->|"side = NOT isLong"| HEDGE
+  PERP -->|lock collateral| COL
+  HEDGE -->|lock premium| COL
+  HEDGE -->|reserve payout| VAULT
+  HEDGE -->|price = odds| MKT
+  PERP -->|mark price| CL
+  MKT -->|resolves via| CL
 ```
+
+The diagram shows the main path. Every contract, including `SettlementRouter`, `ConfidentialPositionManager`/`PositionNFT`, the resolvers and the Uniswap v4 `EventHook`, is listed below.
 
 | Contract | Role |
 |---|---|
