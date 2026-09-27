@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Open a fresh "ETH ≥ $2,500" event round (e.g. before a demo retake — SETTLE resolves the current one).
 # Finalises the previous round to free its capacity, registers + seeds the new market (65/35), earmarks
-# 100k vault capacity, points ProtectedPerp at it, and updates the frontend EVENT_ID.
+# up to 100k vault capacity (capped at the vault's free reserve), points ProtectedPerp at it, and updates the
+# frontend EVENT_ID (frontend/ and frontend-prof/).
 #
 # Usage: ./script/new-event-round.sh <round-number|auto>     (reads PRIVATE_KEY from .env)
 set -euo pipefail
@@ -35,9 +36,14 @@ echo "new      $E"
 echo "finalise previous : $(send --gas-limit 1500000 $HEDGE 'finaliseEvent(bytes32)' $PREV 2>/dev/null || echo skipped)"
 echo "register          : $(send $RESOLVER 'register(bytes32,address,int256,bool,uint64)' $E $FEED 250000000000 false $CT)"
 echo "createMarket      : $(send $MARKET 'createMarket(bytes32,address,uint64,uint256,uint256)' $E $RESOLVER $CT 65 35)"
-echo "earmark 100k      : $(send --gas-limit 1500000 $VAULT 'earmark(bytes32,uint256)' $E 100000000000)"
+# earmark up to 100k, but never more than the vault can actually back (else freeReserve() underflows and the UI blanks)
+FREE=$(cast call $VAULT 'freeReserve()(uint256)' -r $R 2>/dev/null | awk '{print $1}')
+CAP=100000000000; [[ -n $FREE && $FREE -lt $CAP ]] && CAP=$FREE
+echo "earmark $((CAP / 1000000)) USDG : $(send --gas-limit 1500000 $VAULT 'earmark(bytes32,uint256)' $E $CAP)"
 echo "ProtectedPerp     : $(send $PROTECTED 'setEvent(bytes32)' $E)"
 
-sed -i '' "s/EVENT_ID = '0x[0-9a-f]*'/EVENT_ID = '$E'/" "$CONFIG"
+for cfg in "$CONFIG" frontend-prof/src/config/contracts.ts; do
+  [[ -f $cfg ]] && sed -i '' "s/EVENT_ID = '0x[0-9a-f]*'/EVENT_ID = '$E'/" "$cfg"
+done
 echo "open for hedging  : $(cast call $MARKET 'isOpenForHedging(bytes32)(bool)' $E -r $R) · odds $(cast call $MARKET 'probYesBps(bytes32)(uint256)' $E -r $R) bps"
-echo "frontend EVENT_ID updated → reload the app"
+echo "frontend EVENT_ID updated (frontend + frontend-prof) → reload the app"
