@@ -1,0 +1,69 @@
+'use client';
+
+import React from 'react';
+import { useWeb3 } from '../context/Web3Context';
+
+export type Tab = 'market' | 'perps' | 'hedge' | 'lp' | 'keeper';
+
+const TABS: { id: Tab; label: string; color: string }[] = [
+  { id: 'perps', label: 'PERPS', color: '#0f172a' },
+  { id: 'market', label: 'MARKET', color: '#6d28d9' },
+  { id: 'hedge', label: 'HEDGE', color: '#0f172a' },
+  { id: 'lp', label: 'UNDERWRITE', color: '#10b981' },
+  { id: 'keeper', label: 'SETTLE', color: '#f59e0b' },
+];
+
+export function Header({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
+  const { account, isConnecting, connect, wrongNetwork, switchNetwork, balances, blockNumber } = useWeb3();
+  const short = account ? `${account.slice(0, 6)}…${account.slice(-4)}` : null;
+
+  return (
+    <header className="w-full bg-white/85 backdrop-blur-md border-b border-slate-900/10 sticky top-0 z-50">
+      {/* top tier */}
+      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14 gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#0f172a] text-white flex items-center justify-center font-bold" style={{ boxShadow: '0 8px 20px -8px rgba(15,23,42,.5)' }}>C</div>
+          <div className="leading-none">
+            <div className="font-black tracking-tight text-lg">CONTINGENT</div>
+            <div className="font-mono text-[12px] text-slate-700 uppercase tracking-wider">confidential event hedging</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="hidden sm:inline-flex items-center gap-1.5 font-mono text-[12.5px] text-slate-700 neo-pill px-2.5 py-1">
+            <span className="pulse-dot" /> blk {blockNumber || '—'}
+          </span>
+          {account && (
+            <span className="hidden md:inline font-mono text-[12.5px] neo-pill px-2.5 py-1 bg-white">{balances.usdg} USDG</span>
+          )}
+          {wrongNetwork && (
+            <button className="neo-btn neo-btn-coral neo-btn-sm" onClick={switchNetwork}>WRONG NET · SWITCH</button>
+          )}
+          {short ? (
+            <span className="neo-btn neo-btn-white neo-btn-sm cursor-default">{short}</span>
+          ) : (
+            <button className="neo-btn neo-btn-cyan neo-btn-sm" onClick={connect} disabled={isConnecting}>
+              {isConnecting ? 'CONNECTING…' : 'CONNECT WALLET'}
+            </button>
+          )}
+        </div>
+      </div>
+      {/* nav tier */}
+      <div className="w-full border-t border-slate-900/5">
+        <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex gap-2 overflow-x-auto py-2">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => onChange(t.id)}
+              className="neo-btn neo-btn-sm shrink-0"
+              style={active === t.id
+                ? { background: '#0f172a', color: '#fff', borderColor: '#0f172a' }
+                : { background: 'transparent', color: '#475569', borderColor: 'transparent', boxShadow: 'none' }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </header>
+  );
+}
