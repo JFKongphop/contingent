@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+@import "tailwindcss";
+
+/* ── Contingent · "luxury white" theme ──────────────────────────────────────
+   White surfaces, deep-ink type, soft layered shadows, hairline borders, and the
+   graph-paper canvas from the demo video. Colour only carries meaning:
+   emerald = long / gain, rose = short / loss, violet = the public prediction market. */
+:root {
+  --bg-canvas: #f5f5f3;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f8fafc;
+  --bg-muted: #eef0f3;
+
+  --ink: #0f172a;
+  --border-ink: rgba(15, 23, 42, 0.10);
+  --border-strong: rgba(15, 23, 42, 0.18);
+  --text-ink: #0f172a;
+  --text-muted: #475569;
+
+  --emerald: #059669;  --emerald-soft: #ecfdf5;
+  --rose: #e11d48;     --rose-soft: #fff1f2;
+  --violet: #6d28d9;   --violet-soft: #f5f3ff;
+  --amber: #b45309;    --amber-soft: #fffbeb;
+
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px -4px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -12px rgba(15, 23, 42, 0.16);
+  --shadow-lg: 0 2px 4px rgba(15, 23, 42, 0.04), 0 24px 48px -20px rgba(15, 23, 42, 0.22);
+
+  --font-headline: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-canvas);
+    background-image:
+      linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-attachment: fixed;
+    color: var(--text-ink);
+    font-family: var(--font-headline);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  /* readability on white: monospace text is medium weight unless a weight utility says otherwise
+     (base layer → font-bold / font-black still win) */
+  .font-mono, code { font-weight: 500; }
+}
+
+/* Material Icons */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+/* Cards */
+.neo-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-ink);
+  border-radius: 18px;
+  box-shadow: var(--shadow-md);
+}
+.neo-card-sm {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-ink);
+  border-radius: 12px;
+  box-shadow: var(--shadow-xs);
+}
+.neo-card-lg {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-ink);
+  border-radius: 22px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Buttons */
+.neo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--ink);
+  font-family: var(--font-headline);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+}
+.neo-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.neo-btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 10px; }
+.neo-btn-lg { padding: 14px 22px; font-size: 16px; border-radius: 14px; }
+.neo-btn:active:not(:disabled) { transform: translateY(0); box-shadow: var(--shadow-xs); }
+.neo-btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+
+/* primary = deep ink */
+.neo-btn-cyan, .neo-btn-black { background: var(--ink); color: #fff; border-color: var(--ink); }
+.neo-btn-cyan:hover:not(:disabled), .neo-btn-black:hover:not(:disabled) { background: #1e293b; }
+.neo-btn-green { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+.neo-btn-green:hover:not(:disabled) { background: #047857; }
+.neo-btn-coral { background: var(--rose); color: #fff; border-color: var(--rose); }
+.neo-btn-coral:hover:not(:disabled) { background: #be123c; }
+.neo-btn-yellow { background: var(--amber-soft); color: var(--amber); border-color: #fde68a; }
+.neo-btn-yellow:hover:not(:disabled) { background: #fef3c7; }
+.neo-btn-white { background: var(--bg-surface); color: var(--ink); }
+.neo-btn-white:hover:not(:disabled) { background: var(--bg-subtle); }
+
+/* Inputs */
+.neo-input {
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--ink);
+  outline: none;
+  font-family: var(--font-mono);
+  box-shadow: var(--shadow-xs);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.neo-input:focus, .neo-input:focus-within {
+  border-color: rgba(15, 23, 42, 0.45);
+  box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.07);
+}
+
+/* Pills & badges — soft tints, no outlines */
+.neo-pill {
+  border: 1px solid var(--border-ink);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  font-family: var(--font-mono);
+}
+.neo-badge-green, .neo-badge-coral, .neo-badge-yellow, .neo-badge-cyan {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+.neo-badge-green { background: var(--emerald-soft); color: var(--emerald); border: 1px solid #a7f3d0; }
+.neo-badge-coral { background: var(--rose-soft); color: var(--rose); border: 1px solid #fecdd3; }
+.neo-badge-yellow { background: var(--amber-soft); color: var(--amber); border: 1px solid #fde68a; }
+.neo-badge-cyan { background: var(--bg-muted); color: var(--ink); border: 1px solid var(--border-ink); }
+
+}
+
+/* Pulse indicator */
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  display: inline-block;
+  animation: pulse-animation 2s infinite ease-in-out;
+}
+@keyframes pulse-animation {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Monospace numerals */
+.mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
