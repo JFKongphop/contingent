@@ -306,7 +306,13 @@ npm run dev                   # http://localhost:3002 (frontend/ runs on the nex
 Optional: set `NEXT_PUBLIC_ARB_SEPOLIA_RPC` to use your own RPC endpoint. Then follow [`STEPS.md`](STEPS.md).
 
 **Deploying the UI:** it's a standard Next.js app. Set the project root to `contingent/frontend-prof`, and the
-build command is `npm run build`.
+build command is `npm run build` (it uses the webpack builder, which is the verified production build).
+
+**Keep the public demo open:** anyone can resolve the live event from the SETTLE tab, which closes it. Run
+`./script/round-keeper.sh` during judging (it needs the deployer key in `.env` and a little test ETH). Every
+minute it checks the live round and opens the next one if it has closed. The deployed app reads the current
+round from `ProtectedPerp.eventId()`, so it follows automatically without a rebuild. `--once` does a single
+check, for use from cron.
 
 **Tests & demo tooling**
 ```bash

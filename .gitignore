@@ -3,3 +3,5 @@ node_modules
 *.md
 !README.md
 cache
+.claude
+demo-video
