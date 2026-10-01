@@ -13,7 +13,7 @@ Chainlink prices · real FHE encryption (Fhenix CoFHE)
 | | |
 |---|---|
 | 🎬 **Demo video** (3:36) | `<!-- TODO: paste YouTube / Loom link -->` · local file: [`demo-video/contingent-demo-prof.mp4`](demo-video/contingent-demo-prof.mp4) |
-| 🌐 **Live app** | `<!-- TODO: paste deployed URL (deploy frontend-prof/) -->` |
+| 🌐 **Live app** | **[contingentine.xyz](https://contingentine.xyz)**: Arbitrum Sepolia, connect MetaMask (test USDG is free to mint) |
 | 📜 **Contracts** | [Deployed addresses](#61-deployed-contracts-arbitrum-sepolia--chain-421614) (all verified on Arbiscan) · history in [`DEPLOYMENTS.md`](DEPLOYMENTS.md) |
 | 📖 **Explainer** | [`hedging-explained.html`](hedging-explained.html): hedging a perp with a prediction market, with worked numbers |
 | 🧪 **Try it yourself** | [`STEPS.md`](STEPS.md): click-by-click walkthrough of every tab |
@@ -203,7 +203,7 @@ All 14 contracts are source-verified on Arbiscan. Click an address to open it.
 
 **Deployer / owner:** [`0x204a73e8303F3d09B12062dEdAA74B1CDA6E167d`](https://sepolia.arbiscan.io/address/0x204a73e8303F3d09B12062dEdAA74B1CDA6E167d).
 The live event is "ETH ≥ $2,500", rolled into a new round for each demo (the current `EVENT_ID` is in
-`frontend-prof/src/config/contracts.ts`). Redeploy history and notes are in [`DEPLOYMENTS.md`](DEPLOYMENTS.md).
+`frontend/src/config/contracts.ts`). Redeploy history and notes are in [`DEPLOYMENTS.md`](DEPLOYMENTS.md).
 
 ## 7. Tech stack & integration status
 
@@ -299,13 +299,13 @@ forge script script/DeployProtected.s.sol --rpc-url https://sepolia-rollup.arbit
 
 **Frontend** (the app is already wired to the deployed contracts in `src/config/contracts.ts`)
 ```bash
-cd contingent/frontend-prof   # production UI · or contingent/frontend for the original UI
+cd contingent/frontend
 npm install
-npm run dev                   # http://localhost:3002 (frontend/ runs on the next free port from 3000)
+npm run dev                   # http://localhost:3002
 ```
 Optional: set `NEXT_PUBLIC_ARB_SEPOLIA_RPC` to use your own RPC endpoint. Then follow [`STEPS.md`](STEPS.md).
 
-**Deploying the UI:** it's a standard Next.js app. Set the project root to `contingent/frontend-prof`, and the
+**Deploying the UI:** it's a standard Next.js app. Set the project root to `contingent/frontend`, and the
 build command is `npm run build` (it uses the webpack builder, which is the verified production build).
 
 **Keep the public demo open:** anyone can resolve the live event from the SETTLE tab, which closes it. Run
@@ -330,8 +330,7 @@ contingent/
 ├── src/                     Solidity (≈1,550 lines): perps, protection, hedges, vaults, market, resolvers, v4 hook
 ├── test/                    Foundry tests (8 suites, 39 tests, CofheTest mocks)
 ├── script/                  Deploy scripts · new-event-round.sh
-├── frontend-prof/           Next.js app, production UI (luxury white)
-├── frontend/                Next.js app, original UI · E2E + live test scripts
+├── frontend/                Next.js app (live at contingentine.xyz) · E2E + live test scripts
 ├── demo-video/              Demo videos, scenario files, voice-over script
 ├── DEPLOYMENTS.md           Addresses + Arbiscan links + deploy notes
 ├── STEPS.md · HOW-TO.md     Manual walkthrough · usage guide
