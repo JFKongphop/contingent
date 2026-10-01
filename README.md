@@ -10,9 +10,12 @@ size, direction, liquidation price or protection. Everything settles in **USDG**
 **Live on Arbitrum Sepolia** · **14 contracts, all source-verified** · **39 Foundry tests passing** · real
 Chainlink prices · real FHE encryption (Fhenix CoFHE)
 
+## Demo Video
+
+[![Contingent Demo](./media/demo-cover.png)](https://youtu.be/5TD7ZywqFJs)
+
 | | |
 |---|---|
-| 🎬 **Demo video** (3:36) | `<!-- TODO: paste YouTube / Loom link -->` · local file: [`demo-video/contingent-demo-prof.mp4`](demo-video/contingent-demo-prof.mp4) |
 | 🌐 **Live app** | **[contingentine.xyz](https://contingentine.xyz)**: Arbitrum Sepolia, connect MetaMask (test USDG is free to mint) |
 | 📜 **Contracts** | [Deployed addresses](#61-deployed-contracts-arbitrum-sepolia--chain-421614) (all verified on Arbiscan) · history in [`DEPLOYMENTS.md`](DEPLOYMENTS.md) |
 | 📖 **Explainer** | [`hedging-explained.html`](hedging-explained.html): hedging a perp with a prediction market, with worked numbers |
